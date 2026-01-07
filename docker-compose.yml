@@ -1,0 +1,42 @@
+services:
+  portainer-ce:
+    image: docker.io/portainer/portainer-ce:2.33.6-linux-amd64
+    container_name: portainer-ce
+    # Unraid Customized
+    deploy:
+      resources:
+        limits:
+          pids: 2048 
+    labels:
+      net.unraid.docker.managed: "compose"
+      net.unraid.docker.webui: "https://<hostname>.local:9443"
+      net.unraid.docker.icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/portainer.png"
+    environment:
+      - TZ="Asia/Ho_Chi_Minh"
+      - HOST_OS="Unraid"
+      - HOST_HOSTNAME=""
+      - HOST_CONTAINERNAME="portainer-ce"
+    # ---
+      # https://docs.portainer.io/start/install-ce/server'
+      # https://docs.portainer.io/advanced/reverse-proxy/nginx
+      - VIRTUAL_HOST=<hostname>.local
+      - VIRTUAL_PORT=9443
+    volumes:
+      - /mnt/user/<path>/docker/portainer-ce-data:/data:rw
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    ports:
+      - '9443:9443/tcp'
+      - '8000:8000/tcp'
+    networks:
+      - portainer-internal
+    restart: unless-stopped
+
+networks:
+  portainer-internal:
+    driver: bridge
+    name: portainer-internal
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.72.38.0/28
+          gateway: 172.72.38.1
