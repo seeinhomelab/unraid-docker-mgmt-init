@@ -5,15 +5,17 @@
 1. **Setup SSH agent and add key:**
    ```bash
    eval "$(ssh-agent)"
-   ssh-add
+   ssh-add ~/.ssh/<private-ssh-key>
    ```
 
 2. **Initialize folders on Unraid:**
    ```bash
-   ./init
+   nano init.sh
+   chmod +x init.sh
+   ./init.sh
    ```
 
 3. **Deploy Portainer to Unraid:**
    ```bash
-   DOCKER_HOST="ssh://root@192.168.50.6" docker-compose up -d
+   DOCKER_HOST="ssh://root@[unraid-ip]" docker-compose up -d
    ```
